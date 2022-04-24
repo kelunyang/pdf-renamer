@@ -3,8 +3,12 @@
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs-extra';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js'
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/legacy/build/pdf.worker';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
+if(process.env.NODE_ENV === 'production') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = path.join(__dirname, 'pdf.worker.js');
+} else {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/legacy/build/pdf.worker.js';
+}
 import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'

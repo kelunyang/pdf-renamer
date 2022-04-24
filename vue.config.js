@@ -7,5 +7,15 @@ module.exports = defineConfig({
     electronBuilder: {
       preload: 'src/preload.js',      
     }
+  },
+  chainWebpack: config =>{
+    config.plugin("copy").use(require('copy-webpack-plugin'), [{
+      patterns: [
+        {
+          from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
+          to: 'pdf.worker.js'
+       }
+      ]
+    }])
   }
 })

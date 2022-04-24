@@ -360,10 +360,10 @@ export default {
           return pdf.current;
         });
         if(working.length === 0) {
-          oriobj.currentMsg = "掃描共花了：" + dayjs.duration((dayjs().valueOf() - oriobj.startScan)).format('HH:mm:ss:SSS');
+          oriobj.currentMsg = "掃描共花了：" + dayjs.duration((dayjs().valueOf() - oriobj.startScan)).format('HH:mm:ss:SSS') + "，你可以開始更名了";
           setTimeout(() => {
             oriobj.currentMsg = "";
-          }, 3000);
+          }, 5000);
         }
       }
     });
@@ -388,10 +388,10 @@ export default {
           return pdf.current;
         });
         if(working.length === 0) {
-          oriobj.currentMsg = "輸出共花了：" + dayjs.duration(dayjs().valueOf() - oriobj.startRename).format('HH:mm:ss:SSS');
+          oriobj.currentMsg = "輸出共花了：" + dayjs.duration(dayjs().valueOf() - oriobj.startRename).format('HH:mm:ss:SSS') + "，請注意，輸出的PDF在你提供的PDF資料夾下新建立的「export」中";
           setTimeout(() => {
             oriobj.currentMsg = "";
-          }, 3000);
+          }, 10000);
         }
       }
     });
@@ -484,11 +484,6 @@ export default {
         return unScaned.length === 0;
       }
       return false;
-    },
-    exportedPDF: function() {
-      return _.filter(this.pdfFiles, (pdf) => {
-        return pdf.exported
-      });
     }
   },
   data: () => ({
