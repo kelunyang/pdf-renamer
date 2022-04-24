@@ -1,24 +1,9 @@
-# pdf-renamer
+# PDF更名工具
 
-## Project setup
-```
-npm install
-```
+## 簡介
+簡單的說就是一個用electron做的PDF更名工具，可以掃描PDF的內容，根據關鍵字或是meta來更名，節省文書工作時間
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 準備工作
+使用這套工具... 請務必記得把你所有的PDF檔案全部放在同一個資料夾裡，不要分層，放進去就對了（然後在程式裡設定好更名原則）
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+版權沒有，歡迎隨意修改，kelunyang@2022
