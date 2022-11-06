@@ -3,8 +3,6 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.VisualBasic.FileIO;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.IO;
 namespace pdfRenamer
   {
   class Program
