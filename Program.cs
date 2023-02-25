@@ -2,7 +2,12 @@
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.VisualBasic.FileIO;
+using UglyToad.PdfPig;
 using System.Text.RegularExpressions;
+using PdfDocument = iText.Kernel.Pdf.PdfDocument;
+using ReadDocument = UglyToad.PdfPig.PdfDocument;
+using UglyToad.PdfPig.Content;
+
 namespace pdfRenamer
   {
   class Program
@@ -24,15 +29,18 @@ namespace pdfRenamer
             Directory.CreateDirectory(location);
           }
           Console.WriteLine("輸出資料夾...已確認！");
-          using (var pdfDoc = new PdfDocument(new PdfReader(pdfName))) {
-            PdfDictionary trailer = pdfDoc.GetTrailer();
-            PdfDictionary metadataInfo = trailer.GetAsDictionary(PdfName.Info);
-            var keys = metadataInfo.KeySet();
-            foreach (var key in keys)
+          using (ReadDocument document = ReadDocument.Open(pdfName))
+          {
+            var di = document.Information.DocumentInformationDictionary;
+            if (di != null)
             {
-              var value = ((PdfString)metadataInfo.Get(key)).GetValue();
-              oriMeta += " " + value;
+              foreach (var item in di.Data)
+              {
+                oriMeta += item.Value.ToString();
+              }
             }
+          }
+          using (var pdfDoc = new PdfDocument(new PdfReader(pdfName))) {
             FileInfo file = new FileInfo(pdfName);
             int numberOfPages = pdfDoc.GetNumberOfPages();
             Console.WriteLine("PDF檔案...一共有" + numberOfPages + "頁，你最後會得到" + (numberOfPages/numPage) + "個檔案");
@@ -83,26 +91,29 @@ namespace pdfRenamer
         }
         for(int i=0; i<pdfs.Length; i++) {
           string content = "";
-          PdfReader pdfReader = new PdfReader(pdfs[i].FullName);
-          PdfDocument pdfDoc = new PdfDocument(pdfReader);
-          int pages = pdfDoc.GetNumberOfPages();
-          for(int k=1; k<=pages; k++) {
-            ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-            content += " " + PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(k), strategy);
-          }
-          if(oriMeta == "") {
-            metadata = "";
-            PdfDictionary trailer = pdfDoc.GetTrailer();
-            PdfDictionary metadataInfo = trailer.GetAsDictionary(PdfName.Info);
-            var keys = metadataInfo.KeySet();
-            foreach (var key in keys)
+          using (ReadDocument document = ReadDocument.Open(pdfs[i].FullName))
+          {
+            var dInfo = document.Information.DocumentInformationDictionary;
+            if (dInfo != null)
             {
-              var value = ((PdfString)metadataInfo.Get(key)).GetValue();
-              metadata += " " + value;
+              foreach (var item in dInfo.Data)
+              {
+                metadata += item.Value.ToString();
+              }
+            }
+            foreach (Page page in document.GetPages())
+            {
+              if(i== 0)
+              {
+                if(page.Number == 1)
+                {
+                  Console.WriteLine("以下是第一個檔案第一頁的預覽文字（有些PDF可能會有亂碼，建議按照預覽文字調整你的搜尋結果）：");
+                  Console.Write(page.Text);
+                }
+              }
+              content += page.Text;
             }
           }
-          pdfDoc.Close();
-          pdfReader.Close();
           searched++;
           Console.WriteLine("檔案[" + pdfs[i].Name + "]讀取完成，開始匹配搜尋規則");
           for(int r=0; r<ruleItems.Count(); r++) {
